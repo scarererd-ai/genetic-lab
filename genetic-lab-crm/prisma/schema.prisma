@@ -1,0 +1,43 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum LaboratoryStatus { IN_COMMUNICATION NDA_SIGNED CONTRACT_SIGNED }
+enum RecordState { ACTIVE ARCHIVED }
+
+model Representative {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  region    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  laboratories Laboratory[]
+
+  @@index([name])
+  @@index([email])
+  @@index([region])
+}
+
+model Laboratory {
+  id          String @id @default(cuid())
+  companyName String
+  contactName String?
+  email       String?
+  telephone   String?
+  region      String?
+  status      LaboratoryStatus @default(IN_COMMUNICATION)
+  state       RecordState @default(ACTIVE)
+  notes       String?
+  representativeId String?
+  representative Representative? @relation(fields: [representativeId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyName])
+  @@index([contactName])
+  @@index([email])
+  @@index([telephone])
+  @@index([region])
+  @@index([status])
+  @@index([state])
+}
