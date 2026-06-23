@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 type Representative = { id: string; name: string; email?: string | null; region?: string | null };
 type Laboratory = {
-  type Laboratory = {
   id: string; companyName: string; contactName?: string | null; email?: string | null; telephone?: string | null;
   region?: string | null; status: 'IN_COMMUNICATION' | 'NDA_SIGNED' | 'CONTRACT_SIGNED'; opportunityStage?: string | null; state: 'ACTIVE' | 'ARCHIVED';
   notes?: string | null; representativeId?: string | null; representative?: Representative | null;
