@@ -10,10 +10,21 @@ type Laboratory = {
 };
 type Dashboard = { total: number; active: number; archived: number; byStatus: any[]; byRegion: any[]; byRepresentative: any[] };
 
-const emptyLab = { companyName: '', contactName: '', email: '', telephone: '', region: '', status: 'IN_COMMUNICATION', state: 'ACTIVE', notes: '', representativeId: '' } as any;
+const emptyLab = { companyName: '', contactName: '', email: '', telephone: '', region: '', status: 'IN_COMMUNICATION', state: 'ACTIVE', notes: '', representativeId: '', opportunityStage: 'LEAD'} as any;
 const emptyRep = { name: '', email: '', region: '' } as any;
 const statusOptions = [
   ['IN_COMMUNICATION', 'In Communication'], ['NDA_SIGNED', 'NDA Signed'], ['CONTRACT_SIGNED', 'Contract Signed']
+];
+const opportunityStageOptions = [
+  ['LEAD', 'Lead'],
+  ['QUALIFIED', 'Qualified'],
+  ['NDA_SENT', 'NDA Sent'],
+  ['NDA_SIGNED', 'NDA Signed'],
+  ['PROPOSAL_SENT', 'Proposal Sent'],
+  ['CONTRACT_SENT', 'Contract Sent'],
+  ['CONTRACT_SIGNED', 'Contract Signed'],
+  ['ACTIVE_CUSTOMER', 'Active Customer'],
+  ['INACTIVE_CUSTOMER', 'Inactive Customer']
 ];
 
 function displayStatus(status: string) { return status.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); }
@@ -171,6 +182,7 @@ function LabModal({ lab, reps, busy, onClose, onSave }: { lab: any; reps: Repres
       <div className="field"><label>Region / World Area</label><input value={form.region || ''} onChange={e => update('region', e.target.value)} /></div>
       <div className="field"><label>Assigned Representative</label><select value={form.representativeId || ''} onChange={e => update('representativeId', e.target.value)}><option value="">Unassigned</option>{reps.map(r => <option key={r.id} value={r.id}>{r.name} {r.region ? `— ${r.region}` : ''}</option>)}</select></div>
       <div className="field"><label>Status</label><select value={form.status} onChange={e => update('status', e.target.value)}>{statusOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}</select></div>
+      <div className="field"><label>Opportunity Stage</label><select value={form.opportunityStage || 'LEAD'} onChange={e => update('opportunityStage', e.target.value)}>{opportunityStageOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}</select></div>
       <div className="field"><label>State</label><select value={form.state} onChange={e => update('state', e.target.value)}><option value="ACTIVE">Active</option><option value="ARCHIVED">Archived</option></select></div>
       <div className="field full"><label>Details / Notes</label><textarea value={form.notes || ''} onChange={e => update('notes', e.target.value)} /></div>
     </div>
