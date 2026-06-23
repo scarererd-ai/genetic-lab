@@ -30,6 +30,7 @@ export const laboratorySchema = z.object({
 
 export const representativeSchema = z.object({
   name: z.string().min(1, 'Representative name is required'),
+  company: z.string().optional().nullable(),
   email: z.string().email('Invalid email').optional().or(z.literal('')).nullable(),
   region: z.string().optional().nullable(),
 });
