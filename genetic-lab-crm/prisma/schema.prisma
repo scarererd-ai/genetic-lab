@@ -40,6 +40,7 @@ model Laboratory {
   telephone        String?
   region           String?
   status           LaboratoryStatus @default(IN_COMMUNICATION)
+  opportunityStage String           @default("LEAD")
   state            RecordState      @default(ACTIVE)
   notes            String?
   representativeId String?
@@ -53,6 +54,7 @@ model Laboratory {
   @@index([telephone])
   @@index([region])
   @@index([status])
+  @@index([opportunityStage])
   @@index([state])
 }
 
