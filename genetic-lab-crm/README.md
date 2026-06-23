@@ -5,6 +5,7 @@ A full-stack Next.js application for managing genetic laboratory customers, thei
 ## Features
 
 - Add, edit, delete, activate, and archive laboratory/customer records
+  
 - Search by name, company, telephone, email, representative, region, notes, and status
 - Filter by status, active/archive state, representative, and region
 - Import the attached Excel format
