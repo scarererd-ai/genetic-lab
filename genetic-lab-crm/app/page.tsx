@@ -120,7 +120,6 @@ export default function Home() {
     <section className="card" style={{ marginTop: 16 }}>
       <div className="toolbar">
         <div className="field"><label>Search any field</label><input placeholder="Name, company, phone, email, representative, region..." value={filters.q} onChange={e => setFilters({ ...filters, q: e.target.value })} /></div>
-        <div className="field"><label>Status</label><select value={filters.status} onChange={e => setFilters({ ...filters, status: e.target.value })}><option value="">All</option>{statusOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}</select></div>
         <div className="field"><label>Active/Archived</label><select value={filters.state} onChange={e => setFilters({ ...filters, state: e.target.value })}><option value="ACTIVE">Active</option><option value="ARCHIVED">Archived</option><option value="">All</option></select></div>
         <div className="field"><label>Representative</label><select value={filters.representativeId} onChange={e => setFilters({ ...filters, representativeId: e.target.value })}><option value="">All</option>{reps.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select></div>
         <button className="btn secondary" onClick={() => setFilters({ q: '', status: '', state: 'ACTIVE', representativeId: '', region: '' })}>Clear</button>
@@ -130,14 +129,14 @@ export default function Home() {
       {message && <p className="hint">{message}</p>}
       <div className="table-wrap">
         <table>
-          <thead><tr><th>Laboratory</th><th>Contact</th><th>Email / Phone</th><th>Region</th><th>Representative</th><th>Status</th><th>State</th><th>Notes</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Laboratory</th><th>Contact</th><th>Email / Phone</th><th>Region</th><th>Representative</th><th>Opportunity Stage</th><th>State</th><th>Notes</th><th>Actions</th></tr></thead>
           <tbody>{labs.map(lab => <tr key={lab.id}>
             <td><strong>{lab.companyName}</strong></td>
             <td>{lab.contactName || '—'}</td>
             <td>{lab.email || '—'}<br />{lab.telephone || ''}</td>
             <td>{lab.region || '—'}</td>
             <td>{lab.representative?.name || 'Unassigned'}<br /><span className="hint">{lab.representative?.email || ''}</span></td>
-            <td><span className={`pill status-${lab.status}`}>{displayStatus(lab.status)}</span></td>
+            <td><span className="pill">{displayStatus(lab.opportunityStage || 'LEAD')}</span></td>
             <td><span className={`pill state-${lab.state}`}>{lab.state}</span></td>
             <td>{lab.notes || '—'}</td>
             <td><div className="actions"><button className="btn secondary" onClick={() => setEditing(lab)}>Edit</button><button className="btn secondary" onClick={() => archiveToggle(lab)}>{lab.state === 'ACTIVE' ? 'Archive' : 'Activate'}</button><button className="btn danger" onClick={() => remove(lab)}>Delete</button></div></td>
@@ -181,7 +180,6 @@ function LabModal({ lab, reps, busy, onClose, onSave }: { lab: any; reps: Repres
       <div className="field"><label>Telephone</label><input value={form.telephone || ''} onChange={e => update('telephone', e.target.value)} /></div>
       <div className="field"><label>Region / World Area</label><input value={form.region || ''} onChange={e => update('region', e.target.value)} /></div>
       <div className="field"><label>Assigned Representative</label><select value={form.representativeId || ''} onChange={e => update('representativeId', e.target.value)}><option value="">Unassigned</option>{reps.map(r => <option key={r.id} value={r.id}>{r.name} {r.region ? `— ${r.region}` : ''}</option>)}</select></div>
-      <div className="field"><label>Status</label><select value={form.status} onChange={e => update('status', e.target.value)}>{statusOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}</select></div>
       <div className="field"><label>Opportunity Stage</label><select value={form.opportunityStage || 'LEAD'} onChange={e => update('opportunityStage', e.target.value)}>{opportunityStageOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}</select></div>
       <div className="field"><label>State</label><select value={form.state} onChange={e => update('state', e.target.value)}><option value="ACTIVE">Active</option><option value="ARCHIVED">Archived</option></select></div>
       <div className="field full"><label>Details / Notes</label><textarea value={form.notes || ''} onChange={e => update('notes', e.target.value)} /></div>
