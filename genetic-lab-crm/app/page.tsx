@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-type Representative = { id: string; name: string; email?: string | null; region?: string | null };
+type Representative = { id: string; name: string; company?: string | null; email?: string | null; region?: string | null };
 type Laboratory = {
   id: string; companyName: string; contactName?: string | null; email?: string | null; telephone?: string | null;
   region?: string | null; status: 'IN_COMMUNICATION' | 'NDA_SIGNED' | 'CONTRACT_SIGNED'; opportunityStage?: string | null; state: 'ACTIVE' | 'ARCHIVED';
@@ -11,7 +11,7 @@ type Laboratory = {
 type Dashboard = { total: number; active: number; archived: number; byStatus: any[]; byRegion: any[]; byRepresentative: any[] };
 
 const emptyLab = { companyName: '', contactName: '', email: '', telephone: '', region: '', status: 'IN_COMMUNICATION', state: 'ACTIVE', notes: '', representativeId: '', opportunityStage: 'LEAD'} as any;
-const emptyRep = { name: '', email: '', region: '' } as any;
+const emptyRep = { name: '', company: '', email: '', region: '' } as any;
 const statusOptions = [
   ['IN_COMMUNICATION', 'In Communication'], ['NDA_SIGNED', 'NDA Signed'], ['CONTRACT_SIGNED', 'Contract Signed']
 ];
@@ -152,9 +152,10 @@ export default function Home() {
       </div>
       <div className="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Region / World Area</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Region / World Area</th><th>Actions</th></tr></thead>
           <tbody>{reps.map(rep => <tr key={rep.id}>
             <td><strong>{rep.name}</strong></td>
+            <td>{rep.company || '—'}</td>
             <td>{rep.email || '—'}</td>
             <td>{rep.region || '—'}</td>
             <td><button className="btn secondary" onClick={() => setRepEditing(rep)}>Edit</button></td>
@@ -195,9 +196,10 @@ function RepModal({ rep, busy, onClose, onSave }: { rep: any; busy: boolean; onC
   return <div className="modal-backdrop"><div className="modal">
     <h2>{form.id ? 'Edit Representative' : 'Add Representative'}</h2>
     <div className="form-grid">
-      <div className="field"><label>Representative Name *</label><input value={form.name || ''} onChange={e => update('name', e.target.value)} /></div>
-      <div className="field"><label>Email</label><input value={form.email || ''} onChange={e => update('email', e.target.value)} /></div>
-      <div className="field full"><label>Region / World Area</label><input value={form.region || ''} onChange={e => update('region', e.target.value)} /></div>
+    <div className="field"><label>Representative Name *</label><input value={form.name || ''} onChange={e => update('name', e.target.value)} /></div>
+    <div className="field"><label>Company</label><input value={form.company || ''} onChange={e => update('company', e.target.value)} /></div>
+    <div className="field"><label>Email</label><input value={form.email || ''} onChange={e => update('email', e.target.value)} /></div>  
+    <div className="field full"><label>Region / World Area</label><input value={form.region || ''} onChange={e => update('region', e.target.value)} /></div>
     </div>
     <div className="actions" style={{ marginTop: 16, justifyContent: 'flex-end' }}><button className="btn secondary" onClick={onClose}>Cancel</button><button className="btn" disabled={busy} onClick={() => onSave(form)}>{busy ? 'Saving...' : 'Save Representative'}</button></div>
   </div></div>;
