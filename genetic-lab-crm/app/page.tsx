@@ -192,3 +192,4 @@ function RepModal({ rep, busy, onClose, onSave }: { rep: any; busy: boolean; onC
     <div className="actions" style={{ marginTop: 16, justifyContent: 'flex-end' }}><button className="btn secondary" onClick={onClose}>Cancel</button><button className="btn" disabled={busy} onClick={() => onSave(form)}>{busy ? 'Saving...' : 'Save Representative'}</button></div>
   </div></div>;
 }
+
