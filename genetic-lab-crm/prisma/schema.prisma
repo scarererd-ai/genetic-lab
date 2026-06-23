@@ -19,12 +19,12 @@ enum RecordState {
 }
 
 model Representative {
-  id        String   @id @default(cuid())
-  name      String
-  email     String?
-  region    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String       @id @default(cuid())
+  name         String
+  email        String?
+  region       String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   laboratories Laboratory[]
 
   @@index([name])
@@ -33,19 +33,19 @@ model Representative {
 }
 
 model Laboratory {
-  id          String @id @default(cuid())
-  companyName String
-  contactName String?
-  email       String?
-  telephone   String?
-  region      String?
-  status      LaboratoryStatus @default(IN_COMMUNICATION)
-  state       RecordState @default(ACTIVE)
-  notes       String?
+  id               String           @id @default(cuid())
+  companyName      String
+  contactName      String?
+  email            String?
+  telephone        String?
+  region           String?
+  status           LaboratoryStatus @default(IN_COMMUNICATION)
+  state            RecordState      @default(ACTIVE)
+  notes            String?
   representativeId String?
-  representative Representative? @relation(fields: [representativeId], references: [id], onDelete: SetNull)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  representative   Representative? @relation(fields: [representativeId], references: [id], onDelete: SetNull)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
   @@index([companyName])
   @@index([contactName])
@@ -55,3 +55,7 @@ model Laboratory {
   @@index([status])
   @@index([state])
 }
+
+
+
+That should fix the remaining Prisma formatting problems in that file.
