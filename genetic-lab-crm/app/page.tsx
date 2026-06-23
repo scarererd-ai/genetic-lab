@@ -11,6 +11,7 @@ type Laboratory = {
 type Dashboard = { total: number; active: number; archived: number; byStatus: any[]; byRegion: any[]; byRepresentative: any[] };
 
 const emptyLab = { companyName: '', contactName: '', email: '', telephone: '', region: '', status: 'IN_COMMUNICATION', state: 'ACTIVE', notes: '', representativeId: '' } as any;
+const emptyRep = { name: '', email: '', region: '' } as any;
 const statusOptions = [
   ['IN_COMMUNICATION', 'In Communication'], ['NDA_SIGNED', 'NDA Signed'], ['CONTRACT_SIGNED', 'Contract Signed']
 ];
@@ -23,6 +24,7 @@ export default function Home() {
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [filters, setFilters] = useState({ q: '', status: '', state: 'ACTIVE', representativeId: '', region: '' });
   const [editing, setEditing] = useState<any | null>(null);
+  const [repEditing, setRepEditing] = useState<any | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -51,6 +53,18 @@ export default function Home() {
     setBusy(false);
     if (!res.ok) { setMessage('Please check required fields and email format.'); return; }
     setEditing(null); await refresh();
+  }
+
+  async function saveRep(data: any) {
+    setBusy(true); setMessage('');
+    const res = await fetch(data.id ? `/api/representatives/${data.id}` : '/api/representatives', {
+      method: data.id ? 'PATCH' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    setBusy(false);
+    if (!res.ok) { setMessage('Please enter a representative name and a valid email address.'); return; }
+    setRepEditing(null); await refresh();
   }
 
   async function archiveToggle(lab: Laboratory) {
@@ -99,6 +113,7 @@ export default function Home() {
         <div className="field"><label>Active/Archived</label><select value={filters.state} onChange={e => setFilters({ ...filters, state: e.target.value })}><option value="ACTIVE">Active</option><option value="ARCHIVED">Archived</option><option value="">All</option></select></div>
         <div className="field"><label>Representative</label><select value={filters.representativeId} onChange={e => setFilters({ ...filters, representativeId: e.target.value })}><option value="">All</option>{reps.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select></div>
         <button className="btn secondary" onClick={() => setFilters({ q: '', status: '', state: 'ACTIVE', representativeId: '', region: '' })}>Clear</button>
+        <button className="btn secondary" onClick={() => setRepEditing(emptyRep)}>Add Representative</button>
         <button className="btn" onClick={() => setEditing(emptyLab)}>Add Customer</button>
       </div>
       {message && <p className="hint">{message}</p>}
@@ -120,7 +135,26 @@ export default function Home() {
       </div>
     </section>
 
+    <section className="card" style={{ marginTop: 16 }}>
+      <div className="toolbar">
+        <h2 style={{ margin: 0 }}>Representatives</h2>
+        <button className="btn secondary" onClick={() => setRepEditing(emptyRep)}>Add Representative</button>
+      </div>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Region / World Area</th><th>Actions</th></tr></thead>
+          <tbody>{reps.map(rep => <tr key={rep.id}>
+            <td><strong>{rep.name}</strong></td>
+            <td>{rep.email || '—'}</td>
+            <td>{rep.region || '—'}</td>
+            <td><button className="btn secondary" onClick={() => setRepEditing(rep)}>Edit</button></td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+    </section>
+
     {editing && <LabModal lab={editing} reps={reps} busy={busy} onClose={() => setEditing(null)} onSave={saveLab} />}
+    {repEditing && <RepModal rep={repEditing} busy={busy} onClose={() => setRepEditing(null)} onSave={saveRep} />}
   </main>;
 }
 
@@ -141,5 +175,20 @@ function LabModal({ lab, reps, busy, onClose, onSave }: { lab: any; reps: Repres
       <div className="field full"><label>Details / Notes</label><textarea value={form.notes || ''} onChange={e => update('notes', e.target.value)} /></div>
     </div>
     <div className="actions" style={{ marginTop: 16, justifyContent: 'flex-end' }}><button className="btn secondary" onClick={onClose}>Cancel</button><button className="btn" disabled={busy} onClick={() => onSave(form)}>{busy ? 'Saving...' : 'Save'}</button></div>
+  </div></div>;
+}
+
+
+function RepModal({ rep, busy, onClose, onSave }: { rep: any; busy: boolean; onClose: () => void; onSave: (data: any) => void }) {
+  const [form, setForm] = useState({ ...emptyRep, ...rep });
+  const update = (k: string, v: string) => setForm((f: any) => ({ ...f, [k]: v }));
+  return <div className="modal-backdrop"><div className="modal">
+    <h2>{form.id ? 'Edit Representative' : 'Add Representative'}</h2>
+    <div className="form-grid">
+      <div className="field"><label>Representative Name *</label><input value={form.name || ''} onChange={e => update('name', e.target.value)} /></div>
+      <div className="field"><label>Email</label><input value={form.email || ''} onChange={e => update('email', e.target.value)} /></div>
+      <div className="field full"><label>Region / World Area</label><input value={form.region || ''} onChange={e => update('region', e.target.value)} /></div>
+    </div>
+    <div className="actions" style={{ marginTop: 16, justifyContent: 'flex-end' }}><button className="btn secondary" onClick={onClose}>Cancel</button><button className="btn" disabled={busy} onClick={() => onSave(form)}>{busy ? 'Saving...' : 'Save Representative'}</button></div>
   </div></div>;
 }
