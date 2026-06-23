@@ -93,7 +93,7 @@ export default function Home() {
 
   return <main className="shell">
     <section className="hero">
-      <div><div className="eyebrow">Genetic Laboratory CRM</div><h1>Laboratory Customer Database</h1><p>Track laboratory contacts, assigned representatives, region coverage, NDA/contract status, and archive inactive records.</p></div>
+      <div><div className="eyebrow">Genetic Laboratory CRM v2</div><h1>Laboratory Customer Database</h1><p>Track laboratory contacts, assigned representatives, region coverage, NDA/contract status, and archive inactive records.</p></div>
       <div className="import-card card">
         <label className="btn secondary">Import Excel<input type="file" accept=".xlsx,.xls" hidden onChange={e => importExcel(e.target.files?.[0])} /></label>
         <a className="btn" href={exportUrl()}>Export Current Search</a>
