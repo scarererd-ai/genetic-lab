@@ -21,6 +21,7 @@ enum RecordState {
 model Representative {
   id           String       @id @default(cuid())
   name         String
+  company      String?
   email        String?
   region       String?
   createdAt    DateTime     @default(now())
@@ -28,8 +29,10 @@ model Representative {
   laboratories Laboratory[]
 
   @@index([name])
+  @@index([company])
   @@index([email])
   @@index([region])
+
 }
 
 model Laboratory {
